@@ -13,10 +13,10 @@ def create_drone_data():
     delta_time = timedelta(seconds=7)
     drone_data = DroneData(
         ned=NedData(
-            t=[time_start + i*delta_time for i in range(num_points)],
+            t=[time_start + i * delta_time for i in range(num_points)],
             x=np.linspace(2000, 1000, num_points),
-            y=np.linspace(10000, -1000, num_points),
-            z=np.linspace(1000, 1200, num_points)
+            y=np.linspace(10000, 10000, num_points),
+            z=np.linspace(1000, 1000, num_points)
         ),
         rcs_dbsm=10
     )

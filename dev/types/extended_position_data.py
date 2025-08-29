@@ -22,12 +22,15 @@ class PolarData:
 
 @dataclass
 class ExtendedPositionData(NedData, PolarData):
-    def __init__(self, ned: NedData, polar: PolarData):
-        self.t = ned.t
-        self.x = ned.x
-        self.y = ned.y
-        self.z = ned.z
-        self.r = polar.r
-        self.az = polar.az
-        self.el = polar.el
 
+    @classmethod
+    def from_parts(cls, ned: NedData, polar: PolarData):
+        return cls(
+            t=ned.t,
+            x=ned.x,
+            y=ned.y,
+            z=ned.z,
+            r=polar.r,
+            az=polar.az,
+            el=polar.el
+        )

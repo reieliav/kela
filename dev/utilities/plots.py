@@ -34,32 +34,32 @@ def show_figures(true_pos: ExtendedPositionData, sensor_data: SensorData, plots:
     # Azimuth
     row = 1
     fig.add_trace(go.Scatter(x=true_pos.t, y=np.degrees(true_pos.az), mode="lines+markers", name="Azimuth (°)"), row=row, col=1)
-    fig.add_trace(go.Scatter(x=true_pos.t, y=np.degrees(plots.az), mode="lines+markers", name="Azimuth noisy"), row=row, col=1)
+    fig.add_trace(go.Scatter(x=plots.t, y=np.degrees(plots.az), mode="lines+markers", name="Azimuth noisy"), row=row, col=1)
 
     # Elevation
     row += 1
     fig.add_trace(go.Scatter(x=true_pos.t, y=np.degrees(true_pos.el), mode="lines+markers", name="Elevation (°)"), row=row, col=1)
-    fig.add_trace(go.Scatter(x=true_pos.t, y=np.degrees(plots.el), mode="lines+markers", name="Elevation noisy"), row=row, col=1)
+    fig.add_trace(go.Scatter(x=plots.t, y=np.degrees(plots.el), mode="lines+markers", name="Elevation noisy"), row=row, col=1)
 
     # Range
     row += 1
     fig.add_trace(go.Scatter(x=true_pos.t, y=true_pos.r, mode="lines+markers", name="Range"), row=row, col=1)
-    fig.add_trace(go.Scatter(x=true_pos.t, y=plots.r, mode="lines+markers", name="Range noisy"), row=row, col=1)
+    fig.add_trace(go.Scatter(x=plots.t, y=plots.r, mode="lines+markers", name="Range noisy"), row=row, col=1)
 
     # X
     row += 1
     fig.add_trace(go.Scatter(x=true_pos.t, y=true_pos.x, mode="lines+markers", name="True X"), row=row, col=1)
-    fig.add_trace(go.Scatter(x=true_pos.t, y=plots.x, mode="lines+markers", name="Noisy X"), row=row, col=1)
+    fig.add_trace(go.Scatter(x=plots.t, y=plots.x, mode="lines+markers", name="Noisy X"), row=row, col=1)
 
     # Y
     row += 1
     fig.add_trace(go.Scatter(x=true_pos.t, y=true_pos.y, mode="lines+markers", name="True Y"), row=row, col=1)
-    fig.add_trace(go.Scatter(x=true_pos.t, y=plots.y, mode="lines+markers", name="Noisy Y"), row=row, col=1)
+    fig.add_trace(go.Scatter(x=plots.t, y=plots.y, mode="lines+markers", name="Noisy Y"), row=row, col=1)
 
     # Z
     row += 1
     fig.add_trace(go.Scatter(x=true_pos.t, y=true_pos.z, mode="lines+markers", name="True Z"), row=row, col=1)
-    fig.add_trace(go.Scatter(x=true_pos.t, y=plots.z, mode="lines+markers", name="Noisy Z"), row=row, col=1)
+    fig.add_trace(go.Scatter(x=plots.t, y=plots.z, mode="lines+markers", name="Noisy Z"), row=row, col=1)
 
     # Layout tweaks
     fig.update_layout(height=900, width=1200, title_text=f"{sensor_data.name} Sensor Measurements for Drone Path", showlegend=True)
