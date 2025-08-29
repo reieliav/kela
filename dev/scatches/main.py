@@ -3,9 +3,7 @@ from dash import dcc, html
 import pandas as pd
 import plotly.graph_objects as go
 
-from dev.drone import path
-
-
+from dev.scenario.drone import path
 
 df = pd.DataFrame(path, columns=["lat", "lon", "height", "time"])
 df["time"] = pd.to_datetime(df["time"])
