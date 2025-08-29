@@ -12,6 +12,7 @@ def add_noise_to_polar_data(los: PolarData):
     el_noise_std = np.radians(0.5)  # ~0.5 degree
 
     return PolarData(
+        t=los.t,
         r=los.r + np.random.normal(0, rng_noise_std, num_points),
         az=los.az + np.random.normal(0, az_noise_std, num_points),
         el=los.el + np.random.normal(0, el_noise_std, num_points))

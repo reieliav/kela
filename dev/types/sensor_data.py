@@ -2,7 +2,8 @@ from dataclasses import dataclass
 
 
 @dataclass
-class RadarData:
+class SensorData:
+    name: str
     x: float
     y: float
     z: float
