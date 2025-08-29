@@ -9,3 +9,6 @@ class SensorData:
     x: float
     y: float
     z: float
+    rng_noise_std: float  # meters
+    az_noise_std: float  # degree
+    el_noise_std: float  # degree
