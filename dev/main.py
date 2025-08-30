@@ -11,7 +11,7 @@ sensors = create_sensors()
 
 sensors_data = []
 for sensor in sensors:
-    true_pos = sample_path_in_sensor_frame(drone_data.ned, sensor)
+    true_pos = sample_path_in_sensor_frame(drone_data, sensor)
     plots = add_noise_to_sensor_samples(sensor, true_pos)
     sensor_data = PlotData(true=true_pos, plots=plots, sensor=sensor)
     show_sensor_figures(sensor_data)

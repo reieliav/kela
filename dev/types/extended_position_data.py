@@ -6,7 +6,6 @@ import numpy as np
 
 @dataclass
 class NedData:
-    t: list[datetime]
     x: np.ndarray
     y: np.ndarray
     z: np.ndarray
@@ -14,19 +13,19 @@ class NedData:
 
 @dataclass
 class PolarData:
-    t: list[datetime]
     r: np.ndarray
     az: np.ndarray
     el: np.ndarray
 
 
 @dataclass
-class ExtendedPositionData(NedData, PolarData):
+class ExtendedPathData(NedData, PolarData):
+    t: list[datetime]
 
     @classmethod
-    def from_parts(cls, ned: NedData, polar: PolarData):
+    def from_parts(cls, ned: NedData, polar: PolarData, t: list[datetime]):
         return cls(
-            t=ned.t,
+            t=t,
             x=ned.x,
             y=ned.y,
             z=ned.z,

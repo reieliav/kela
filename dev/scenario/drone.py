@@ -12,8 +12,8 @@ def create_drone_data():
     time_start = datetime(year=2025, month=8, day=29, hour=14, minute=23, second=23)
     delta_time = timedelta(seconds=7)
     drone_data = DroneData(
+        t=[time_start + i * delta_time for i in range(num_points)],
         ned=NedData(
-            t=[time_start + i * delta_time for i in range(num_points)],
             x=np.linspace(2000, 1000, num_points),
             y=np.linspace(10000, 10000, num_points),
             z=np.linspace(1000, 1000, num_points)

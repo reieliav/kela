@@ -41,8 +41,8 @@ def show_unified_figures(sensors_data: list[PlotData]):
         # 3D True + Noisy Path
         row = 1
         col = 1
-        fig.add_trace(go.Scatter3d(x=plots.x, y=plots.y, z=plots.z, mode='lines+markers', name=f'{sensor.name} Noisy Path',
-                                   line=dict(dash='dash')), row=row, col=col)
+        fig.add_trace(go.Scatter3d(x=plots.x, y=plots.y, z=plots.z, mode='lines+markers',
+                                   name=f'{sensor.name} Noisy Path', line=dict(dash='dash')), row=row, col=col)
         fig.add_trace(go.Scatter3d(x=[sensor.x], y=[sensor.y], z=[sensor.z], mode='markers',
                                    name=f'sensor position: {sensor.name}', showlegend=False,
                                    marker=dict(size=6)), row=row, col=col)
@@ -50,15 +50,18 @@ def show_unified_figures(sensors_data: list[PlotData]):
         # X
         row = 1
         col = 2
-        fig.add_trace(go.Scatter(x=plots.t, y=plots.x, mode="lines+markers", name=f"{sensor.name} Noisy X"), row=row, col=col)
+        fig.add_trace(go.Scatter(x=plots.t, y=plots.x, mode="lines+markers", name=f"{sensor.name} Noisy X"),
+                      row=row, col=col)
 
         # Y
         row += 1
-        fig.add_trace(go.Scatter(x=plots.t, y=plots.y, mode="lines+markers", name=f"{sensor.name} Noisy Y"), row=row, col=col)
+        fig.add_trace(go.Scatter(x=plots.t, y=plots.y, mode="lines+markers", name=f"{sensor.name} Noisy Y"),
+                      row=row, col=col)
 
         # Z
         row += 1
-        fig.add_trace(go.Scatter(x=plots.t, y=plots.z, mode="lines+markers", name=f"{sensor.name} Noisy Z"), row=row, col=col)
+        fig.add_trace(go.Scatter(x=plots.t, y=plots.z, mode="lines+markers", name=f"{sensor.name} Noisy Z"),
+                      row=row, col=col)
 
         # Layout tweaks
         fig.update_layout(
@@ -76,7 +79,7 @@ def show_unified_figures(sensors_data: list[PlotData]):
 
 
 def show_sensor_figures(sensor_data: PlotData):
-    # todo: plot as list of ExtendedPositionData
+    # todo: plot as list of ExtendedPathData
 
     true_pos = sensor_data.true
     sensor = sensor_data.sensor
@@ -110,13 +113,17 @@ def show_sensor_figures(sensor_data: PlotData):
     col = 2
     # Azimuth
     row = 1
-    fig.add_trace(go.Scatter(x=true_pos.t, y=np.degrees(true_pos.az), mode="lines+markers", name="Azimuth (°)"), row=row, col=col)
-    fig.add_trace(go.Scatter(x=plots.t, y=np.degrees(plots.az), mode="lines+markers", name="Azimuth noisy"), row=row, col=col)
+    fig.add_trace(go.Scatter(x=true_pos.t, y=np.degrees(true_pos.az), mode="lines+markers", name="Azimuth (°)"),
+                  row=row, col=col)
+    fig.add_trace(go.Scatter(x=plots.t, y=np.degrees(plots.az), mode="lines+markers", name="Azimuth noisy"),
+                  row=row, col=col)
 
     # Elevation
     row += 1
-    fig.add_trace(go.Scatter(x=true_pos.t, y=np.degrees(true_pos.el), mode="lines+markers", name="Elevation (°)"), row=row, col=col)
-    fig.add_trace(go.Scatter(x=plots.t, y=np.degrees(plots.el), mode="lines+markers", name="Elevation noisy"), row=row, col=col)
+    fig.add_trace(go.Scatter(x=true_pos.t, y=np.degrees(true_pos.el), mode="lines+markers", name="Elevation (°)"),
+                  row=row, col=col)
+    fig.add_trace(go.Scatter(x=plots.t, y=np.degrees(plots.el), mode="lines+markers", name="Elevation noisy"),
+                  row=row, col=col)
 
     # Range
     row += 1
