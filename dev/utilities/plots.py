@@ -24,7 +24,7 @@ def show_unified_figures(sensors_data: list[PlotData]):
     row = 1
     col = 1
     fig.add_trace(go.Scatter3d(x=true_pos.x, y=true_pos.y, z=true_pos.z, mode='lines+markers', name='True Path',
-                               line=dict(color='blue')), row=row, col=col)
+                               ), row=row, col=col)
 
     col = 2
     row = 1
@@ -42,9 +42,10 @@ def show_unified_figures(sensors_data: list[PlotData]):
         row = 1
         col = 1
         fig.add_trace(go.Scatter3d(x=plots.x, y=plots.y, z=plots.z, mode='lines+markers', name=f'{sensor.name} Noisy Path',
-                                   line=dict(color='orange', dash='dash')), row=row, col=col)
-        fig.add_trace(go.Scatter3d(x=[sensor.x], y=[sensor.y], z=[sensor.z], mode='markers', name=sensor.name,
-                                   marker=dict(size=6, color='red')), row=row, col=col)
+                                   line=dict(dash='dash')), row=row, col=col)
+        fig.add_trace(go.Scatter3d(x=[sensor.x], y=[sensor.y], z=[sensor.z], mode='markers',
+                                   name=f'sensor position: {sensor.name}', showlegend=False,
+                                   marker=dict(size=6)), row=row, col=col)
 
         # X
         row = 1
@@ -60,7 +61,16 @@ def show_unified_figures(sensors_data: list[PlotData]):
         fig.add_trace(go.Scatter(x=plots.t, y=plots.z, mode="lines+markers", name=f"{sensor.name} Noisy Z"), row=row, col=col)
 
         # Layout tweaks
-        fig.update_layout(title_text="Sensors Measurements for Drone Path", showlegend=True, template="plotly_dark")
+        fig.update_layout(
+            title={
+                "text": "<b>Sensors Measurements for Drone Path</b>",
+                "y": 0.95,
+                "x": 0.5,
+                "xanchor": "center",
+                "yanchor": "top"
+            },
+            title_font=dict(size=24),
+            showlegend=True, template="plotly_dark")
 
     fig.show()
 
@@ -93,7 +103,8 @@ def show_sensor_figures(sensor_data: PlotData):
                                line=dict(color='blue')), row=row, col=col)
     fig.add_trace(go.Scatter3d(x=plots.x, y=plots.y, z=plots.z, mode='lines+markers', name=f'{sensor.name} Noisy Path',
                                line=dict(color='orange', dash='dash')), row=row, col=col)
-    fig.add_trace(go.Scatter3d(x=[sensor.x], y=[sensor.y], z=[sensor.z], mode='markers', name=sensor.name,
+    fig.add_trace(go.Scatter3d(x=[sensor.x], y=[sensor.y], z=[sensor.z], mode='markers',
+                               name=f'sensor position: {sensor.name}', showlegend=False,
                                marker=dict(size=6, color='red')), row=row, col=col)
 
     col = 2
@@ -128,7 +139,15 @@ def show_sensor_figures(sensor_data: PlotData):
     fig.add_trace(go.Scatter(x=plots.t, y=plots.z, mode="lines+markers", name="Noisy Z"), row=row, col=col)
 
     # Layout tweaks
-    fig.update_layout(title_text=f"{sensor.name} Sensor Measurements for Drone Path",
-                      showlegend=True, template="plotly_dark")
+    fig.update_layout(
+        title={
+            "text": f"<b>{sensor.name} sensor measurements for drone path</b>",
+            "y": 0.95,
+            "x": 0.5,
+            "xanchor": "center",
+            "yanchor": "top"
+        },
+        title_font=dict(size=24), showlegend=True, template="plotly_dark",
+    )
 
     fig.show()

@@ -19,11 +19,7 @@ for sensor in sensors:
 
 show_unified_figures(sensors_data)
 
-
-
-
 # todo:
-#  all sensors on one plot,
-#  mds
 #  path in llh
 #  map, dash.
+#  mds
