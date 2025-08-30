@@ -1,15 +1,29 @@
 
 from dev.scenario.drone import create_drone_data
-from dev.scenario.sensors import create_sensors_data
+from dev.scenario.sensors import create_sensors
+from dev.types.plot_data import PlotData
 from dev.utilities.noise import add_noise_to_sensor_samples
-from dev.utilities.plots import show_figures
+from dev.utilities.plots import show_sensor_figures, show_unified_figures
 from dev.utilities.position import sample_path_in_sensor_frame
 
-# scenario data
 drone_data = create_drone_data()
-sensors_data = create_sensors_data()
+sensors = create_sensors()
 
-for sensor in sensors_data:
+sensors_data = []
+for sensor in sensors:
     true_pos = sample_path_in_sensor_frame(drone_data.ned, sensor)
     plots = add_noise_to_sensor_samples(sensor, true_pos)
-    show_figures(true_pos, sensor, plots)
+    sensor_data = PlotData(true=true_pos, plots=plots, sensor=sensor)
+    show_sensor_figures(sensor_data)
+    sensors_data.append(sensor_data)
+
+show_unified_figures(sensors_data)
+
+
+
+
+# todo:
+#  all sensors on one plot,
+#  mds
+#  path in llh
+#  map, dash.

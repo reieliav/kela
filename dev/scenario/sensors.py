@@ -3,7 +3,7 @@ import numpy as np
 from dev.types.sensor_data import SensorData
 
 
-def create_sensors_data() -> list[SensorData]:
+def create_sensors() -> list[SensorData]:
     return [
         SensorData(name='Fox', rate=0.2, mds=0,
                    x=5000, y=10000, z=10000,
