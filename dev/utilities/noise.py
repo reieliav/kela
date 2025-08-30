@@ -1,22 +1,31 @@
 import numpy as np
 
-from dev.types.extended_position_data import PolarData, ExtendedPathData, NedData
+from dev.types.extended_position_data import PolarData, ExtendedPathData, NedData, GeoPathData
 from dev.types.sensor_data import SensorData
 from dev.utilities.position import polar_to_ned
+import pymap3d as pm
 
 
 def add_noise_to_sensor_samples(sensor: SensorData, los: ExtendedPathData):
-    num_points = len(los.r)
+    """
+    The noise is added to the polar coordinates, which as these are the native sensor coordinates
 
-    noisy_los_sensor_polar = PolarData(
-        r=los.r + np.random.normal(0, sensor.rng_noise_std, num_points),
-        az=los.az + np.random.normal(0, sensor.az_noise_std, num_points),
-        el=los.el + np.random.normal(0, sensor.el_noise_std, num_points))
+    """
+    num_points = len(los.polar.r)
 
-    noisy_los_sensor_ned = polar_to_ned(noisy_los_sensor_polar)
-    drone_coordinates = np.vstack([noisy_los_sensor_ned.x, noisy_los_sensor_ned.y, noisy_los_sensor_ned.z]).T
-    temp = drone_coordinates + np.array([sensor.x, sensor.y, sensor.z])
-    noisy_los_local_ned = NedData(x=temp[:, 0], y=temp[:, 1], z=temp[:, 2])
-    plots = ExtendedPathData.from_parts(ned=noisy_los_local_ned, polar=noisy_los_sensor_polar, t=los.t)
+    noisy_polar = PolarData(
+        r=los.polar.r + np.random.normal(0, sensor.rng_noise_std, num_points),
+        az=los.polar.az + np.random.normal(0, sensor.az_noise_std, num_points),
+        el=los.polar.el + np.random.normal(0, sensor.el_noise_std, num_points),
+        origin=sensor.position
+    )
+
+    noisy_ned = polar_to_ned(noisy_polar)
+    origin = sensor.position
+    latitude, longitude, altitude = pm.ned2geodetic(n=noisy_ned.north, e=noisy_ned.east, d=noisy_ned.down,
+                                                    lat0=origin.latitude, lon0=origin.longitude, h0=origin.altitude)
+
+    plots = ExtendedPathData(t=los.t, ned=noisy_ned, polar=noisy_polar,
+                             llh=GeoPathData(latitude=latitude, longitude=longitude, altitude=altitude))
 
     return plots

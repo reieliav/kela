@@ -5,46 +5,59 @@ import numpy as np
 import pandas as pd
 
 from dev.types.drone_data import DroneData
-from dev.types.extended_position_data import PolarData, NedData, ExtendedPathData
+from dev.types.extended_position_data import PolarData, NedData, ExtendedPathData, GeoPathData
 from dev.types.sensor_data import SensorData
+import pymap3d as pm
+
+
+def get_time_stamps(rate, time_vector):
+    sample_dt = 1 / rate
+    first_timestamp = time_vector[0] + timedelta(seconds=random.uniform(0, sample_dt))
+    sensor_timestamps_datetime = pd.date_range(start=first_timestamp, end=time_vector[-1],
+                                               freq=timedelta(seconds=sample_dt)).to_list()
+
+    t_ref = time_vector[0]
+    original_timestamp = (np.array(time_vector, dtype="datetime64[ns]") - np.datetime64(t_ref)) / np.timedelta64(1,
+                                                                                                                  "s")
+    sensor_timestamps = ((np.array(sensor_timestamps_datetime, dtype="datetime64[ns]") - np.datetime64(t_ref))
+                         / np.timedelta64(1, "s"))
+
+    return original_timestamp, sensor_timestamps, sensor_timestamps_datetime
 
 
 def sample_path_in_sensor_frame(drone_data: DroneData, sensor_data: SensorData) -> ExtendedPathData:
+    original_timestamp, sensor_timestamps, sensor_timestamps_datetime = get_time_stamps(sensor_data.rate, drone_data.t)
+
+    latitude_measured = np.interp(sensor_timestamps, original_timestamp, drone_data.lla.latitude)
+    longitude_measured = np.interp(sensor_timestamps, original_timestamp, drone_data.lla.longitude)
+    altitude_measured = np.interp(sensor_timestamps, original_timestamp, drone_data.lla.altitude)
+
     # Vector from sensor to each path position
-    path_local_ned = drone_data.ned
-    sample_dt = 1 / sensor_data.rate
-    first_timestamp = drone_data.t[0] + timedelta(seconds=random.uniform(0, sample_dt))
-    sensor_timestamps = pd.date_range(start=first_timestamp, end=drone_data.t[-1],
-                                      freq=timedelta(seconds=sample_dt)).to_list()
-
-    t_ref = drone_data.t[0]
-    path_time_sec = (np.array(drone_data.t, dtype="datetime64[ns]") - np.datetime64(t_ref)) / np.timedelta64(1, "s")
-    interpolate_timestamps = ((np.array(sensor_timestamps, dtype="datetime64[ns]") - np.datetime64(t_ref))
-                              / np.timedelta64(1, "s"))
-    x_measured = np.interp(interpolate_timestamps, path_time_sec, path_local_ned.x)
-    y_measured = np.interp(interpolate_timestamps, path_time_sec, path_local_ned.y)
-    z_measured = np.interp(interpolate_timestamps, path_time_sec, path_local_ned.z)
-
-    drone_coordinates = np.vstack([x_measured, y_measured, z_measured]).T
-    vectors = drone_coordinates - np.array([sensor_data.x, sensor_data.y, sensor_data.z])
+    lla0 = sensor_data.position
+    north, east, down = pm.geodetic2ned(lat=latitude_measured, lon=longitude_measured, h=altitude_measured,
+                                        lat0=lla0.latitude, lon0=lla0.longitude, h0=lla0.altitude)
+    drone_coordinates = np.vstack([north, east, down]).T
 
     # Distances (range)
-    ranges = np.linalg.norm(vectors, axis=1)
+    ranges = np.linalg.norm(drone_coordinates, axis=1)
 
     # Azimuth (angle in XY plane)
-    azimuth = np.arctan2(vectors[:, 1], vectors[:, 0])
+    azimuth = np.arctan2(drone_coordinates[:, 1], drone_coordinates[:, 0])
 
     # Elevation (angle from XY plane upward)
-    elevation = np.arctan2(vectors[:, 2], np.linalg.norm(vectors[:, :2], axis=1))
-    return ExtendedPathData(t=sensor_timestamps,
-                            r=ranges, az=azimuth, el=elevation,
-                            x=x_measured, y=y_measured, z=z_measured)
+    elevation = np.arctan2(drone_coordinates[:, 2], np.linalg.norm(drone_coordinates[:, :2], axis=1))
+
+    return ExtendedPathData(
+        t=sensor_timestamps_datetime, polar=PolarData(r=ranges, az=azimuth, el=elevation),
+        ned=NedData(north=north, east=east, down=down, origin=sensor_data.position),
+        llh=GeoPathData(latitude=latitude_measured, longitude=longitude_measured, altitude=altitude_measured))
 
 
 def polar_to_ned(polar: PolarData) -> NedData:
     # Convert spherical to cartesian
     return NedData(
-        x=polar.r * np.cos(polar.el) * np.cos(polar.az),
-        y=polar.r * np.cos(polar.el) * np.sin(polar.az),
-        z=polar.r * np.sin(polar.el)
+        north=polar.r * np.cos(polar.el) * np.cos(polar.az),
+        east=polar.r * np.cos(polar.el) * np.sin(polar.az),
+        down=polar.r * np.sin(polar.el),
+        origin=polar.origin
     )

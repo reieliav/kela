@@ -1,14 +1,30 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Optional
 
 import numpy as np
 
 
 @dataclass
+class GeoPointData:
+    latitude: float
+    longitude: float
+    altitude: float
+
+
+@dataclass
+class GeoPathData:
+    latitude: np.ndarray
+    longitude: np.ndarray
+    altitude: np.ndarray
+
+
+@dataclass
 class NedData:
-    x: np.ndarray
-    y: np.ndarray
-    z: np.ndarray
+    north: np.ndarray
+    east: np.ndarray
+    down: np.ndarray
+    origin: Optional[GeoPointData] = None
 
 
 @dataclass
@@ -16,20 +32,12 @@ class PolarData:
     r: np.ndarray
     az: np.ndarray
     el: np.ndarray
+    origin: Optional[GeoPointData] = None
 
 
 @dataclass
-class ExtendedPathData(NedData, PolarData):
+class ExtendedPathData:
     t: list[datetime]
-
-    @classmethod
-    def from_parts(cls, ned: NedData, polar: PolarData, t: list[datetime]):
-        return cls(
-            t=t,
-            x=ned.x,
-            y=ned.y,
-            z=ned.z,
-            r=polar.r,
-            az=polar.az,
-            el=polar.el
-        )
+    llh: GeoPathData
+    ned: NedData
+    polar: PolarData
