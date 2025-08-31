@@ -10,11 +10,12 @@ def create_sensors() -> list[SensorData]:
             name='Fox',
             sensor_type=SensorType.RADAR,
             rate=1,
-            mds=1e-12,  # Effective radar constant
-            position=GeoPointData(latitude=32, longitude=35, altitude=0),
+            mds=1e-17,  # Effective radar constant
+            position=GeoPointData(latitude=32.26, longitude=35.4, altitude=0),
             rng_noise_std=0,
             az_noise_std=np.radians(0),
             el_noise_std=np.radians(0),
+            plot_color='green'
         ),
 
         SensorData(
@@ -22,11 +23,13 @@ def create_sensors() -> list[SensorData]:
             sensor_type=SensorType.RADAR,
             rate=1,
             mds=1e-20,  # Minimum detectable temperature difference [K]
-            position=GeoPointData(latitude=32.95, longitude=35.509, altitude=0),
+            position=GeoPointData(latitude=32.08, longitude=35.509, altitude=0),
             rng_noise_std=300,
             az_noise_std=np.radians(.1),
-            el_noise_std=np.radians(0.2)
-        ),
+            el_noise_std=np.radians(0.2),
+            plot_color='cyan'
+
+    ),
 
         SensorData(
             name='Wolf',
@@ -36,6 +39,7 @@ def create_sensors() -> list[SensorData]:
             position=GeoPointData(latitude=32.02, longitude=35.02, altitude=76),
             rng_noise_std=300,
             az_noise_std=np.radians(.1),
-            el_noise_std=np.radians(0.2)
+            el_noise_std=np.radians(0.2),
+            plot_color='orange'
         ),
     ]

@@ -17,6 +17,8 @@ from dev.utilities.position import sample_path_in_sensor_frame
 drones = create_drone_data()
 sensors = create_sensors()
 
+sensor_color_mapping = {s.name: s.plot_color for s in sensors}
+
 scenario_data: dict[int, DroneDetectionData] = {}
 for drone in drones:
     detections: dict[str, PlotData] = {}
@@ -27,8 +29,6 @@ for drone in drones:
 
     scenario_data[drone.id] = DroneDetectionData(drone=drone, detections=detections)
 
-def random_hex_color():
-    return "#{:06x}".format(random.randint(0, 0xFFFFFF))
 
 def create_map(drone_value, sensor_value):
     m = folium.Map(location=[31.8, 35.2], zoom_start=8)  #, tiles="Esri.WorldImagery")
@@ -39,11 +39,12 @@ def create_map(drone_value, sensor_value):
             weight = 10
             color = 'red'
             for sensor_name, sensor_detections in scenario_data[drone_data.id].detections.items():
-                plot_color = random_hex_color()
+                radius = 20 if sensor_name == sensor_value else 10
                 plots_data = sensor_detections.plots.llh
                 for i in range(len(plots_data.latitude)):
-                    folium.CircleMarker([plots_data.latitude[i], plots_data.longitude[i]], color=plot_color, fill=True,
-                                        popup=f'{sensor_name} #{i}').add_to(m)
+                    folium.CircleMarker([plots_data.latitude[i], plots_data.longitude[i]],
+                                        color=sensor_color_mapping[sensor_name], fill=True,
+                                        popup=f'{sensor_name} #{i}', radius=radius).add_to(m)
 
         else:
             weight = 6
@@ -63,8 +64,16 @@ def create_map(drone_value, sensor_value):
         iframe = folium.IFrame(html=html_content, width=200, height=200)
         popup = folium.Popup(iframe, max_width=250)
         folium.Marker([s.position.latitude, s.position.longitude], popup=popup).add_to(m)
-
-    m.save("current_map.html")
+        folium.plugins.SemiCircle(
+            (s.position.latitude, s.position.longitude),
+            radius=100000,
+            direction=90,
+            arc=70,
+            color="red",
+            fill_color="red",
+            opacity=0,
+            popup="Direction - 0 degrees, arc 90 degrees",
+        ).add_to(m)
 
     return m.get_root().render()
 

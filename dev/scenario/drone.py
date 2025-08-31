@@ -19,8 +19,8 @@ def create_drone_data() -> list[DroneData]:
             t=[time_start + i * delta_time for i in range(num_points)],
             rcs_dbsm=-10,
             llh=GeoPathData(
-                latitude=np.linspace(31.96, 32.04, num_points),
-                longitude=np.linspace(34.96, 35.04, num_points),
+                latitude=np.linspace(32.3, 32.4, num_points),
+                longitude=np.linspace(36., 34.8, num_points),
                 altitude=np.linspace(100, 100, num_points),
             ),
         ),
@@ -30,8 +30,8 @@ def create_drone_data() -> list[DroneData]:
             t=[time_start + i * delta_time for i in range(num_points)],
             rcs_dbsm=-10,
             llh=GeoPathData(
-                latitude=np.linspace(33.96, 32.14, num_points),
-                longitude=np.linspace(35.96, 35.14, num_points),
+                latitude=np.linspace(32., 32.14, num_points),
+                longitude=np.linspace(36, 34.5, num_points),
                 altitude=np.linspace(100, 100, num_points),
             ),
         )

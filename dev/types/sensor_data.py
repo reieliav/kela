@@ -17,6 +17,7 @@ class SensorData:
     sensor_type: SensorType
     position: GeoPointData
     name: str
+    plot_color: str
     rate: float
     mds: float  # (minimum detectable signal)
     az_noise_std: float  # degree
