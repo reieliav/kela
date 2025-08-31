@@ -2,8 +2,13 @@ import dash
 from dash import dcc, html
 import pandas as pd
 import plotly.graph_objects as go
-
-from dev.scenario.drone import path
+path = [
+    (32.0853, 34.7818, 100, "2025-08-27 10:00:00"),
+    (32.0856, 34.7822, 120, "2025-08-27 10:01:00"),
+    (32.0860, 34.7825, 140, "2025-08-27 10:02:00"),
+    (32.0865, 34.7828, 130, "2025-08-27 10:03:00"),
+    (32.0870, 34.7830, 150, "2025-08-27 10:04:00"),
+]
 
 df = pd.DataFrame(path, columns=["lat", "lon", "height", "time"])
 df["time"] = pd.to_datetime(df["time"])

@@ -12,6 +12,8 @@ import pymap3d as pm
 from dev.utilities.detection_threshold import is_detected_by_radar
 
 
+# todo: add dtm engine
+
 def get_time_stamps(rate, time_vector):
     sample_dt = 1 / rate
     first_timestamp = time_vector[0] + timedelta(seconds=random.uniform(0, sample_dt))
@@ -30,9 +32,9 @@ def get_time_stamps(rate, time_vector):
 def sample_path_in_sensor_frame(drone_data: DroneData, sensor_data: SensorData) -> ExtendedPathData:
     original_timestamp, sensor_timestamps, sensor_timestamps_datetime = get_time_stamps(sensor_data.rate, drone_data.t)
 
-    latitude_measured = np.interp(sensor_timestamps, original_timestamp, drone_data.lla.latitude)
-    longitude_measured = np.interp(sensor_timestamps, original_timestamp, drone_data.lla.longitude)
-    altitude_measured = np.interp(sensor_timestamps, original_timestamp, drone_data.lla.altitude)
+    latitude_measured = np.interp(sensor_timestamps, original_timestamp, drone_data.llh.latitude)
+    longitude_measured = np.interp(sensor_timestamps, original_timestamp, drone_data.llh.longitude)
+    altitude_measured = np.interp(sensor_timestamps, original_timestamp, drone_data.llh.altitude)
 
     # Vector from sensor to each path position
     lla0 = sensor_data.position

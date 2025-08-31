@@ -20,9 +20,9 @@ def create_sensors() -> list[SensorData]:
         SensorData(
             name='Rabbit',
             sensor_type=SensorType.RADAR,
-            rate=0.1,
-            mds=1e-15,  # Minimum detectable temperature difference [K]
-            position=GeoPointData(latitude=32.01, longitude=35, altitude=0),
+            rate=1,
+            mds=1e-20,  # Minimum detectable temperature difference [K]
+            position=GeoPointData(latitude=32.95, longitude=35.509, altitude=0),
             rng_noise_std=300,
             az_noise_std=np.radians(.1),
             el_noise_std=np.radians(0.2)
