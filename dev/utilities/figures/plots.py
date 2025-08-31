@@ -2,10 +2,10 @@ import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from dev.types.plot_data import PlotData
+from dev.types.plot_data import PlotData, DroneDetectionData
 
 
-def create_unified_figures(sensors_data: list[PlotData], show: bool = False):
+def create_unified_figures(drone_detection_data: DroneDetectionData, show: bool = False):
     fig = make_subplots(
         rows=3, cols=2,
         specs=[
@@ -19,7 +19,7 @@ def create_unified_figures(sensors_data: list[PlotData], show: bool = False):
     )
 
     # plot true (once):
-    true_pos = sensors_data[0].true
+    true_pos = drone_detection_data.drone
     # 3D True + Noisy Path
     row = 1
     col = 1
@@ -38,7 +38,7 @@ def create_unified_figures(sensors_data: list[PlotData], show: bool = False):
     fig.add_trace(go.Scatter(x=true_pos.t, y=true_pos.llh.altitude, mode="lines+markers", name="True altitude"),
                   row=row, col=col)
 
-    for sensor_data in sensors_data:
+    for sensor_data in drone_detection_data.detections.values():
         sensor = sensor_data.sensor
         plots = sensor_data.plots
 
