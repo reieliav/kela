@@ -15,10 +15,10 @@ def create_drone_data():
     drone_data = DroneData(
         t=[time_start + i * delta_time for i in range(num_points)],
         lla=GeoPathData(
-            latitude=np.linspace(31.9, 32, num_points),
-            longitude=np.linspace(34.9, 35, num_points),
-            altitude=np.linspace(2000, 1000, num_points),
+            latitude=np.linspace(31.96, 32.04, num_points),
+            longitude=np.linspace(34.96, 35.04, num_points),
+            altitude=np.linspace(100, 100, num_points),
         ),
-        rcs_dbsm=10
+        rcs_dbsm=-10
     )
     return drone_data

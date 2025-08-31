@@ -9,6 +9,8 @@ from dev.types.extended_position_data import PolarData, NedData, ExtendedPathDat
 from dev.types.sensor_data import SensorData
 import pymap3d as pm
 
+from dev.utilities.detection_threshold import is_detected_by_radar
+
 
 def get_time_stamps(rate, time_vector):
     sample_dt = 1 / rate
@@ -40,6 +42,13 @@ def sample_path_in_sensor_frame(drone_data: DroneData, sensor_data: SensorData) 
 
     # Distances (range)
     ranges = np.linalg.norm(drone_coordinates, axis=1)
+    detected_indices = [i for i, r in enumerate(ranges) if
+                        is_detected_by_radar(rcs_dbsm=drone_data.rcs_dbsm, effective_mds=sensor_data.mds, distance_m=r)]
+
+
+    sensor_timestamps_datetime = [sensor_timestamps_datetime[i] for i in detected_indices]
+    ranges = ranges[detected_indices]
+    drone_coordinates = drone_coordinates[detected_indices, :]
 
     # Azimuth (angle in XY plane)
     azimuth = np.arctan2(drone_coordinates[:, 1], drone_coordinates[:, 0])

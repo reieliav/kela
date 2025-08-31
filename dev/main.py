@@ -20,6 +20,5 @@ for sensor in sensors:
 show_unified_figures(sensors_data)
 
 # todo:
-#  path in llh
 #  map, dash.
-#  mds
+#  readme, requirements
