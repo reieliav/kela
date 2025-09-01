@@ -16,4 +16,3 @@ class PlotData:
 class DroneDetectionData:
     drone: DroneData
     detections: dict[str, PlotData]
-

@@ -29,7 +29,7 @@ def create_sensors() -> list[SensorData]:
             el_noise_std=np.radians(0.2),
             plot_color='cyan'
 
-    ),
+        ),
 
         SensorData(
             name='Wolf',

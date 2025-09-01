@@ -11,6 +11,5 @@ class DroneData:
     llh: GeoPathData
     rcs_dbsm: float
     # todo 1: spectral heat signature, max speed, curves spec, climbing speed, ...,
-    # todo 2: path generator, fleet, ground tracking (control height agl).
+    # todo 2: simple kinematic engine, path generator, fleet, ground tracking (control height agl).
     # todo 3: visual characters, acoustic characters (for acoustic sensors), reflectivity, brightness..
-

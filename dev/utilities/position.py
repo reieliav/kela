@@ -21,8 +21,7 @@ def get_time_stamps(rate, time_vector):
                                                freq=timedelta(seconds=sample_dt)).to_list()
 
     t_ref = time_vector[0]
-    original_timestamp = (np.array(time_vector, dtype="datetime64[ns]") - np.datetime64(t_ref)) / np.timedelta64(1,
-                                                                                                                  "s")
+    original_timestamp = (np.array(time_vector, dtype="datetime64[ns]") - np.datetime64(t_ref)) / np.timedelta64(1, "s")
     sensor_timestamps = ((np.array(sensor_timestamps_datetime, dtype="datetime64[ns]") - np.datetime64(t_ref))
                          / np.timedelta64(1, "s"))
 
@@ -46,7 +45,6 @@ def sample_path_in_sensor_frame(drone_data: DroneData, sensor_data: SensorData) 
     ranges = np.linalg.norm(drone_coordinates, axis=1)
     detected_indices = [i for i, r in enumerate(ranges) if
                         is_detected_by_radar(rcs_dbsm=drone_data.rcs_dbsm, effective_mds=sensor_data.mds, distance_m=r)]
-
 
     sensor_timestamps_datetime = [sensor_timestamps_datetime[i] for i in detected_indices]
     ranges = ranges[detected_indices]
