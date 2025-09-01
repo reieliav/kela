@@ -8,6 +8,7 @@ from folium.plugins import AntPath, Fullscreen, MousePosition
 from dev.scenario.drone import create_drone_data
 from dev.scenario.sensors import create_sensors
 from dev.types.plot_data import DroneDetectionData, PlotData
+from dev.utilities.detection_threshold import dbsm_to_m2
 from dev.utilities.figures.dash_plots import create_dash_sensor_figures, create_dash_unified_figures
 from dev.utilities.noise import add_noise_to_sensor_samples
 from dev.utilities.position import sample_path_in_sensor_frame
@@ -20,6 +21,7 @@ sensor_color_mapping = {s.name: s.plot_color for s in sensors}
 
 
 def get_available_tiles():
+    # todo: move to utils/map
     tile_url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/0/0/0"
     try:
         r = requests.get(tile_url, timeout=2)
@@ -43,40 +45,49 @@ for drone in drones:
 
 
 def create_map(drone_value, sensor_value):
+    # todo: move to utils/map
+    drone_rcs = 1
     m = folium.Map(location=[31.8, 35.2], zoom_start=8, tiles=tiles)
     Fullscreen(position="topright", force_separate_button=True).add_to(m)
     MousePosition(separator=" , ", num_digits=6, prefix="Coordinates:").add_to(m)
     for drone_data in drones:
+        html_content = f"""
+<h4>Drone id: {drone_data.id}</h4>
+<p>RCS: {drone_data.rcs_dbsm} [dBsm]</p>
+        """
+        iframe = folium.IFrame(html=html_content, width='150', height='100')
+        drone_popup = folium.Popup(iframe, max_width=250)
         if str(drone_data.id) == drone_value.split(' ')[1]:
             AntPath(locations=[(lat, lon) for lat, lon in zip(drone_data.llh.latitude, drone_data.llh.longitude)],
-                    weight=7, delay=1000, dash_array=[10, 20], color='red', popup=f'Drone {drone_data.id}').add_to(m)
+                    weight=7, delay=1000, dash_array=[10, 20], color='red', popup=drone_popup).add_to(m)
             for sensor_name, sensor_detections in scenario_data[drone_data.id].detections.items():
                 radius = 40 if sensor_name == sensor_value else 20
                 plots_data = sensor_detections.plots.llh
                 for i in range(len(plots_data.latitude)):
                     folium.Circle((plots_data.latitude[i], plots_data.longitude[i]),
                                         color=sensor_color_mapping[sensor_name], fill=True,
-                                        popup=f'{sensor_name} #{i}', radius=radius).add_to(m)
+                                        popup=f'plot #{i} ({sensor_name})', radius=radius).add_to(m)
+            drone_rcs = dbsm_to_m2(drone_data.rcs_dbsm)
 
         else:
             folium.PolyLine(
                 locations=[(lat, lon) for lat, lon in zip(drone_data.llh.latitude, drone_data.llh.longitude)],
-                weight=5, delay=1000, color='gray',  popup=f'Drone {drone_data.id}').add_to(m)
+                weight=5, delay=1000, color='gray',  popup=drone_popup).add_to(m)
 
     for s in sensors:
         html_content = f"""
-        <h4>{s.name} ({s.sensor_type.name.lower()})</h4>
-        <p>LLH: ({s.position.latitude}, {s.position.longitude}, {s.position.altitude})</p>
-        <p>mds: {s.mds}</p>
-        <p>heading: {s.mds}</p>
-        <p>fov: {s.mds}</p>
-        """
+<h4>{s.name} ({s.sensor_type.name.lower()})</h4>
+<p>LLH: ({s.position.latitude}, {s.position.longitude}, {s.position.altitude})</p>
+<p>mds: {s.mds}</p>
+<p>heading: {s.heading}</p>
+<p>fov: {s.fov}</p>
+"""
         iframe = folium.IFrame(html=html_content, width='200', height='200')
         popup = folium.Popup(iframe, max_width=250)
         folium.Marker([s.position.latitude, s.position.longitude], popup=popup).add_to(m)
         folium.plugins.SemiCircle(
             (s.position.latitude, s.position.longitude),
-            radius=10/(s.mds**0.25),
+            radius=50*drone_rcs/(s.mds**0.25),
             direction=s.heading,
             arc=s.fov,
             color='red',
@@ -91,7 +102,7 @@ def create_map(drone_value, sensor_value):
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
 fig_3d_init, fig_profiles_init = create_dash_sensor_figures(scenario_data[drones[0].id].detections[sensors[0].name])
 app.layout = dbc.Container([
-    html.H1('Drone Detections - Path and plots',  style={'textAlign': 'center'}),
+    html.H2('Drone Detections - Path and plots',  style={'textAlign': 'center'}),
     html.H5('Choose drone and sensor:'),
     dbc.Row([
         dcc.Dropdown(

@@ -17,7 +17,7 @@ def create_drone_data() -> list[DroneData]:
         DroneData(
             id=1,
             t=[time_start + i * delta_time for i in range(num_points)],
-            rcs_dbsm=-10,
+            rcs_dbsm=-20,
             llh=GeoPathData(
                 latitude=np.linspace(32.3, 32.4, num_points),
                 longitude=np.linspace(36., 34.8, num_points),
