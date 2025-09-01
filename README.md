@@ -1,5 +1,5 @@
 # Kela - Drone Detections Dashboard
-![Drone Detections Dashboard](dev/docs/dashboard.png)
+![Drone Detections Dashboard](/docs/dashboard.png)
 
 An interactive dashboard for **drone detections**, combining 3D paths, time-series plots, and geospatial mapping.  
 Built with [Plotly Dash](https://dash.plotly.com/) and [Folium](https://python-visualization.github.io/folium/).
@@ -33,4 +33,4 @@ python.exe /dev/dash_server.py
 ## run basic:
 python.exe /dev/main.py 
 ```
-![Drone Detections Dashboard](dev/docs/figs.png)
+![Drone Detections Dashboard](/docs/figs.png)
