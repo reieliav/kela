@@ -14,3 +14,9 @@ def is_detected_by_radar(rcs_dbsm: float, distance_m: float, effective_mds: floa
     Returns True if radar can detect a target with given RCS at a certain distance, according to sensor MDS.
     """
     return dbsm_to_m2(rcs_dbsm) >= effective_mds * distance_m ** 4
+
+# todo:
+#  heading and fov logic
+#  2D / 3D
+#  estimation, sensors fusion
+

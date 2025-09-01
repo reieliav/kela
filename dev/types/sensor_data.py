@@ -23,4 +23,7 @@ class SensorData:
     az_noise_std: float  # degree
     el_noise_std: float  # degree
     rng_noise_std: float = None  # meters
+    heading: float = 0
+    fov: float = 360
+
     # todo: orientation, fov, resolution, 2d/3d, ..

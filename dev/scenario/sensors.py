@@ -15,7 +15,9 @@ def create_sensors() -> list[SensorData]:
             rng_noise_std=0,
             az_noise_std=np.radians(0),
             el_noise_std=np.radians(0),
-            plot_color='green'
+            plot_color='green',
+            heading=30,
+            fov=30
         ),
 
         SensorData(
@@ -27,8 +29,9 @@ def create_sensors() -> list[SensorData]:
             rng_noise_std=300,
             az_noise_std=np.radians(.1),
             el_noise_std=np.radians(0.2),
-            plot_color='cyan'
-
+            plot_color='cyan',
+            heading=90,
+            fov=70
         ),
 
         SensorData(
@@ -40,6 +43,8 @@ def create_sensors() -> list[SensorData]:
             rng_noise_std=300,
             az_noise_std=np.radians(.1),
             el_noise_std=np.radians(0.2),
-            plot_color='orange'
+            plot_color='orange',
+            heading=150,
+            fov=60
         ),
     ]
