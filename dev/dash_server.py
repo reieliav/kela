@@ -51,17 +51,17 @@ def create_map(drone_value, sensor_value):
             AntPath(locations=[(lat, lon) for lat, lon in zip(drone_data.llh.latitude, drone_data.llh.longitude)],
                     weight=7, delay=1000, dash_array=[10, 20], color='red', popup=f'Drone {drone_data.id}').add_to(m)
             for sensor_name, sensor_detections in scenario_data[drone_data.id].detections.items():
-                radius = 20 if sensor_name == sensor_value else 10
+                radius = 40 if sensor_name == sensor_value else 20
                 plots_data = sensor_detections.plots.llh
                 for i in range(len(plots_data.latitude)):
-                    folium.CircleMarker((plots_data.latitude[i], plots_data.longitude[i]),
+                    folium.Circle((plots_data.latitude[i], plots_data.longitude[i]),
                                         color=sensor_color_mapping[sensor_name], fill=True,
                                         popup=f'{sensor_name} #{i}', radius=radius).add_to(m)
 
         else:
             folium.PolyLine(
                 locations=[(lat, lon) for lat, lon in zip(drone_data.llh.latitude, drone_data.llh.longitude)],
-                weight=5, delay=1000, color='gray').add_to(m)
+                weight=5, delay=1000, color='gray',  popup=f'Drone {drone_data.id}').add_to(m)
 
     for s in sensors:
         html_content = f"""
@@ -91,6 +91,8 @@ def create_map(drone_value, sensor_value):
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
 fig_3d_init, fig_profiles_init = create_dash_sensor_figures(scenario_data[drones[0].id].detections[sensors[0].name])
 app.layout = dbc.Container([
+    html.H1('Drone Detections - Path and plots',  style={'textAlign': 'center'}),
+    html.H5('Choose drone and sensor:'),
     dbc.Row([
         dcc.Dropdown(
             id="drone_value",
@@ -138,4 +140,4 @@ def update_all(sensor_value, drone_value):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, dev_tools_hot_reload=False)
+    app.run(dev_tools_hot_reload=False)
